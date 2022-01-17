@@ -1,0 +1,21 @@
+name: Cache with setup-node
+
+on: push
+
+jobs:
+  save-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup node
+        id: setup-node-and-cache
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.17'
+          cache: 'yarn'
+          cache-dependency-path: '**/yarn.lock'
+
+      - name: Cache exists
+        if: steps.setup-node-and-cache.outputs.cache-hit != 'true'
+        run: echo "Cache does not exists!"

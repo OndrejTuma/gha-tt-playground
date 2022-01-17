@@ -1,0 +1,25 @@
+{
+  "name": "gha-tt-playground",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OndrejTuma/gha-tt-playground.git"
+  },
+  "author": "OndrejTuma <tu.ondrej@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OndrejTuma/gha-tt-playground/issues"
+  },
+  "homepage": "https://github.com/OndrejTuma/gha-tt-playground#readme",
+  "devDependencies": {
+    "@toptal/davinci": "^11.2.6"
+  },
+  "dependencies": {
+    "@toptal/picasso": "^17.3.3"
+  }
+}
