@@ -16,6 +16,6 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
 
-      - name: Cache exists
+      - name: Cache does not exist
         if: steps.setup-node-and-cache.outputs.cache-hit != 'true'
-        run: echo "Cache does not exists!"
+        run: echo "Cache does not exist!"
