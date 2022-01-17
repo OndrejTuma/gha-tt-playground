@@ -20,5 +20,8 @@ jobs:
         if: steps.setup-node-and-cache.outputs.cache-hit != 'true'
         run: echo "Cache does not exist!"
 
-      - name: Install yarn
-        run: yarn install
+      - name: List cache
+        run: |
+          pwd
+          ls -la
+          ls -la ~
