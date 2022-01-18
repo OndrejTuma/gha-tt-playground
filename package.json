@@ -20,6 +20,7 @@
     "@toptal/davinci": "^11.2.6"
   },
   "dependencies": {
-    "@toptal/picasso": "^17.3.3"
+    "@toptal/picasso": "^17.3.3",
+    "classnames": "^2.3.1"
   }
 }
