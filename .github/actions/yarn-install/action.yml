@@ -1,10 +1,5 @@
 name: Yarn install
 description: Install and cache node modules with yarn
-inputs:
-  node-version:
-    description: 'Specify node version'
-    required: false
-    default: '14.17'
 outputs:
   cache-hit:
     description: 'A boolean value to indicate an exact match was found for the primary key'
@@ -12,18 +7,10 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Setup node
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ inputs.node-version }}
-
     - name: Set node version
       id: set-node-version
       shell: bash
       run: echo "::set-output name=version::$(node -v)"
-
-    - name: Checkout project
-      uses: actions/checkout@v2
 
     - name: Set cache dir
       id: set-cache-dir

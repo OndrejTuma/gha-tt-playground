@@ -1,0 +1,14 @@
+name: Node setup
+description: Set node with specified version. Default 14.17
+inputs:
+  node-version:
+    description: 'Specify node version'
+    required: false
+    default: '14.17'
+runs:
+  using: composite
+  steps:
+    - name: Setup node
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ inputs.node-version }}
