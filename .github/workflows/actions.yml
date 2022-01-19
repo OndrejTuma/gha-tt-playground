@@ -10,6 +10,6 @@ jobs:
       - uses: ./.github/actions/yarn-install
         id: yarn-install
       - name: Cache exists
-        if: steps.yarn-install.cache-hit == 'true'
-        run: 'Cache is here!'
+        if: steps.yarn-install.outputs.cache-hit == 'true'
+        run: echo "Cache is here!"
       - run: du -hs node_modules
