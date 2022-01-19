@@ -12,6 +12,10 @@ jobs:
         id: set-cache-dir
         run: echo "::set-output name=dir::$(yarn cache dir)"
 
+      - name: Set node version
+        id: set-node-version
+        run: echo "::set-output name=version::$(node -v)"
+
       - uses: actions/cache@v2
         id: yarn-cache
         with:
@@ -19,6 +23,13 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+
+      - name: Cache node_modules folder
+        uses: actions/cache@v2
+        id: node-modules-cache
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ steps.set-node-version.outputs.version }}-yarn-node_modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: Cache does not exist
         if: steps.yarn-cache.outputs.cache-hit != 'true'
