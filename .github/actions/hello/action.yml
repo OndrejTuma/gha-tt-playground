@@ -2,7 +2,7 @@ name: Hello
 author: Ondrej Tuma
 description: Print out hello
 inputs:
-  who-to-gree:
+  who-to-greet:
     description: 'Who to greet'
     required: true
     default: man
@@ -11,4 +11,4 @@ outputs:
     description: 'Greeting time'
 runs:
   using: "node16"
-  main: "index.js"
+  main: "dist/index.js"
