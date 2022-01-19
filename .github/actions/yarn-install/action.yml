@@ -1,0 +1,23 @@
+name: Yarn install
+description: Install and cache node modules with yarn
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v2
+
+    - name: Set node version
+      id: set-node-version
+      shell: bash
+      run: echo "::set-output name=version::$(node -v)"
+
+    - name: Cache node_modules folder
+      uses: actions/cache@v2
+      id: node-modules-cache
+      with:
+        path: '**/node_modules'
+        key: ${{ runner.os }}-node-${{ steps.set-node-version.outputs.version }}-yarn-node_modules-${{ hashFiles('**/yarn.lock') }}
+
+    - name: yarn install
+      shell: bash
+      run: yarn install
