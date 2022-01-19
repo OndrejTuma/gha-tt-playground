@@ -21,6 +21,9 @@ runs:
       shell: bash
       run: echo "::set-output name=version::$(node -v)"
 
+    - run: ls -l
+      shell: bash
+
     - name: Cache node_modules folder
       uses: actions/cache@v2
       id: node-modules-cache
@@ -28,6 +31,12 @@ runs:
         path: '**/node_modules'
         key: ${{ runner.os }}-node-${{ steps.set-node-version.outputs.version }}-yarn-node_modules-${{ hashFiles('**/yarn.lock') }}
 
+    - run: ls -l
+      shell: bash
+
     - name: yarn install
       shell: bash
       run: yarn install
+
+    - run: ls -l
+      shell: bash
