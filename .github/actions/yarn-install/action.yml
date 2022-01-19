@@ -27,5 +27,4 @@ runs:
     - name: yarn install
       shell: bash
       run: |
-        yarn policies set-version
         yarn install --frozen-lockfile --ignore-optional --non-interactive
