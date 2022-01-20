@@ -23,6 +23,8 @@ runs:
       with:
         path: '**/node_modules'
         key: ${{ runner.os }}-node-${{ steps.set-node-version.outputs.version }}-yarn-node_modules-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-node-${{ steps.set-node-version.outputs.version }}-yarn-node_modules-
 
     - name: yarn install
       shell: bash
