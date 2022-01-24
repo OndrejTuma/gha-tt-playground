@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ true ]
+if [ false ]
 then
   echo "Error man!"
   exit 1
