@@ -7,13 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/node-setup
+      - uses: ./.github/actions/hello-docker
+        id: hello
         with:
-          node-version: 16.13
-      - uses: ./.github/actions/yarn-install
-        id: yarn-install
-      - name: Cache exists
-        if: steps.yarn-install.outputs.cache-hit == 'true'
-        run: echo "Cache is here!"
-      - name: Print node_modules size
-        run: du -hs node_modules
+          who-to-greet: "World"
+      - run: |
+          echo "Time voe: ${{ steps.hello.outputs.time }}"
+          echo $HELLO
