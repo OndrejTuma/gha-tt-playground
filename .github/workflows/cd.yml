@@ -1,0 +1,17 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: [CI]
+    branches: [master]
+    types:
+      - completed
+  push:
+    tags: v[1-9]+.[0-9]+.[0-9]+
+
+jobs:
+  sucess:
+    name: Log success
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Success!"
