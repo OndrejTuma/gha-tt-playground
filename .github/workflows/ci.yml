@@ -3,7 +3,6 @@ name: CI
 on:
   push:
     tags: v[1-9]+.[0-9]+.[0-9]+
-
   pull_request:
     branches: [develop, hotfix*]
 
@@ -13,3 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Success!"
+      - name: Test tag push
+        if: ${{ github.event_name == "push" && contains(github.event.ref, "/tags/") }}
+        run: echo "It is a tag!"
+      - run: echo "${{ toJson(github) }}"
