@@ -1,7 +1,0 @@
-name: CD
-description: Run CD
-runs:
-  using: composite
-  steps:
-    - run: echo "Success!"
-      shell: bash
