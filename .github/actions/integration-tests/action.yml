@@ -6,10 +6,6 @@ inputs:
     description: 'Artifact name for screenshot'
     required: false
     default: cypress-screenshots
-  coverage:
-    description: 'Artifact name for coverage report'
-    required: false
-    default: cypress-coverage
 
 runs:
   using: composite
@@ -32,12 +28,4 @@ runs:
         name: ${{ inputs.screenshots }}
         path: |
           **/cypress/screenshots
-        retention-days: 3
-
-    - name: Store Cypress Coverage Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ inputs.coverage }}
-        path: |
-          ./coverage
         retention-days: 3

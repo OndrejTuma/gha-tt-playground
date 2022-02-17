@@ -1,0 +1,37 @@
+name: Cypress Coverage
+description: Upload Cypress Coverage Artifacts
+
+inputs:
+  name:
+    description: 'Artifact name for coverage report'
+    required: false
+    default: cypress-coverage
+  path:
+    description: 'Path to coverage folder. Accepts glob pattern'
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Get Coverage Output Folder
+      if: ${{ !inputs.path }}
+      id: coverage-path
+      shell: bash
+      run: node ./.github/actions/cypress-coverage/findCoverageOutputDir.js
+
+    - name: Set Output Folder
+      id: coverage-folder
+      shell: bash
+      run: echo "::set-output name=dir::${{ inputs.path && inputs.path || steps.coverage-path.outputs.dir }}"
+
+    - name: ZIP Coverage Folder
+      shell: bash
+      run: |
+        zip -r -j cypress-coverage.zip ${{ steps.coverage-folder.outputs.dir }}
+
+    - name: Store Cypress Coverage Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ inputs.name }}
+        path: cypress-coverage.zip
+        retention-days: 3

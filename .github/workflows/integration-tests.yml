@@ -19,3 +19,5 @@ jobs:
       - uses: ./.github/actions/yarn-install
 
       - uses: ./.github/actions/integration-tests
+
+      - uses: ./.github/actions/cypress-coverage
