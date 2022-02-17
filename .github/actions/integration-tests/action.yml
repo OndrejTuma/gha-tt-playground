@@ -1,0 +1,43 @@
+name: Integration Tests
+description: Run integration tests
+
+inputs:
+  screenshots:
+    description: 'Artifact name for screenshot'
+    required: false
+    default: cypress-screenshots
+  coverage:
+    description: 'Artifact name for coverage report'
+    required: false
+    default: cypress-coverage
+
+runs:
+  using: composite
+  steps:
+    - name: Cache Cypress folder
+      uses: actions/cache@v2
+      with:
+        path: '~/.cache/Cypress'
+        key: cypress-${{ hashFiles('**/yarn.lock') }}
+
+    - name: Run Cypress tests
+      uses: cypress-io/github-action@v2
+      with:
+        install: false
+        command: yarn test:integration:ci
+
+    - name: Store Cypress Screenshots Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ inputs.screenshots }}
+        path: |
+          **/cypress/screenshots
+        retention-days: 3
+
+    - name: Store Cypress Coverage Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ inputs.coverage }}
+        path: |
+          ./coverage
+        retention-days: 3

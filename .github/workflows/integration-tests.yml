@@ -1,0 +1,21 @@
+name: Integration tests Workflow
+
+on: push
+
+jobs:
+  integration_check:
+    name: Check:IntegrationTests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel previous workflow
+        uses: styfle/cancel-workflow-action@dffcefda964529302c673388c65a8137995e9603
+
+      - name: Checkout project
+        uses: actions/checkout@v2
+
+      - name: Setup node
+        uses: actions/setup-node@v2
+
+      - uses: ./.github/actions/yarn-install
+
+      - uses: ./.github/actions/integration-tests

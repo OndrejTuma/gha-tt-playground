@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "parcel serve index.html",
+    "instrument": "npx nyc instrument --compact=false ./ instrumented",
+    "test:integration:ci": "start-test start http://localhost:1234 test:ci",
+    "test:ci": "cypress run",
+    "test:integration:open": "cypress open"
   },
   "repository": {
     "type": "git",
@@ -17,13 +21,24 @@
   },
   "homepage": "https://github.com/OndrejTuma/gha-tt-playground#readme",
   "devDependencies": {
+    "@babel/core": "^7.17.4",
+    "@cypress/code-coverage": "^3.9.12",
     "@toptal/davinci": "^11.2.6",
-    "@zeit/ncc": "^0.22.3"
+    "@zeit/ncc": "^0.22.3",
+    "babel-plugin-istanbul": "^6.1.1",
+    "chalk": "^5.0.0",
+    "debug": "^4.3.3",
+    "execa": "^6.1.0",
+    "globby": "^13.1.1",
+    "js-yaml": "^4.1.0",
+    "parcel-bundler": "^1.12.5"
   },
   "dependencies": {
     "@actions/core": "^1.6.0",
     "@actions/github": "^5.0.0",
     "@toptal/picasso": "^17.3.3",
-    "lodash": "^4.17.21"
+    "cypress": "^9.5.0",
+    "lodash": "^4.17.21",
+    "start-server-and-test": "^1.14.0"
   }
 }
