@@ -13,16 +13,10 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Get Coverage Output Folder
-      if: ${{ !inputs.path }}
-      id: coverage-path
-      shell: bash
-      run: node ./.github/actions/cypress-coverage/findCoverageOutputDir.js
-
-    - name: Set Output Folder
+    - name: Get Raw Coverage Output Folder
       id: coverage-folder
       shell: bash
-      run: echo "::set-output name=dir::${{ inputs.path && inputs.path || steps.coverage-path.outputs.dir }}"
+      run: echo "::set-output name=dir::$(node ./.github/actions/cypress-coverage-artifact/findCoverageOutputDir.js ${{ inputs.path }})"
 
     - name: ZIP Coverage Folder
       shell: bash

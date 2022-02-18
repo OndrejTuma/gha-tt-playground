@@ -1,0 +1,22 @@
+name: Cypress Coverage Comment
+description: Create a comment with coverage report info
+
+inputs:
+  coverage-command:
+    description: 'Command that outputs coverage report'
+    required: false
+    default: "npx nyc report --reporter=text-summary"
+
+runs:
+  using: composite
+  steps:
+#    - name: Get Coverage Output Folder
+#      id: coverage-folder
+#      shell: bash
+#      run: echo "::set-output name=dir::$(node ./.github/actions/cypress-coverage-artifact/findCoverageOutputDir.js ${{ inputs.path }})"
+
+    - name: Code Coverage Reporter
+      uses: tj-actions/coverage-reporter@3eef0fe5e5d3881cc8faa2fb1365296edbf8af60
+      with:
+        coverage-command: ${{ inputs.coverage-command }}
+        token: ${{ env.GITHUB_TOKEN || github.token }}

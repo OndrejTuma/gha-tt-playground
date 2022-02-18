@@ -1,3 +1,9 @@
+const defaultPath = process.argv[2]
+
+if (defaultPath) {
+  return console.log(defaultPath)
+}
+
 const fs = require('fs')
 
 const fileMap = [
@@ -24,4 +30,4 @@ for (let i = 0; i < fileMap.length; i++) {
   }
 }
 
-console.log(`::set-output name=dir::${dir}`)
+console.log(dir)

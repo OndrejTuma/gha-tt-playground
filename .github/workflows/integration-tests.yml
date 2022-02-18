@@ -1,6 +1,6 @@
 name: Integration tests Workflow
 
-on: push
+on: pull_request
 
 jobs:
   integration_check:
@@ -20,4 +20,6 @@ jobs:
 
       - uses: ./.github/actions/integration-tests
 
-      - uses: ./.github/actions/cypress-coverage
+#      - uses: ./.github/actions/cypress-coverage-artifact
+
+      - uses: ./.github/actions/cypress-coverage-comment
