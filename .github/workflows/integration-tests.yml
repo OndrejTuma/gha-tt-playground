@@ -1,25 +1,53 @@
 name: Integration tests Workflow
 
+env:
+  PARALLEL_GROUPS: 4
+  PRINT_COVERAGE: true
+
 on: pull_request
 
 jobs:
-  integration_check:
-    name: Check:IntegrationTests
+  create_parallel_matrix:
+    name: Create:ParallelMatrix
     runs-on: ubuntu-latest
     steps:
       - name: Cancel previous workflow
         uses: styfle/cancel-workflow-action@dffcefda964529302c673388c65a8137995e9603
 
+      - id: set-matrix
+        run: |
+          echo "::set-output name=matrix::$(node -e 'console.log(JSON.stringify(Array(${{ env.PARALLEL_GROUPS }}).fill().map((_, i) => i)))')"
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
+  integration_check:
+    name: Check:IntegrationTests
+    runs-on: ubuntu-latest
+    needs: create_parallel_matrix
+    strategy:
+      matrix:
+        parallel_group: ${{ fromJson(needs.create_parallel_matrix.outputs.matrix) }}
+    env:
+      PARALLEL_GROUP_ID: ${{ matrix.parallel_group }}
+    steps:
       - name: Checkout project
         uses: actions/checkout@v2
 
       - name: Setup node
         uses: actions/setup-node@v2
 
+#      - name: Checkout davinci GHAs
+#        uses: actions/checkout@v2
+#        with:
+#          repository: toptal/davinci-github-actions
+#          token: ${{ env.GITHUB_TOKEN }}
+#          path: ./.github/actions/
+
       - uses: ./.github/actions/yarn-install
 
       - uses: ./.github/actions/integration-tests
 
-#      - uses: ./.github/actions/cypress-coverage-artifact
-
-      - uses: ./.github/actions/cypress-coverage-comment
+      - if: ${{ env.PRINT_COVERAGE }}
+        uses: ./.github/actions/cypress-coverage-comment
+        with:
+          coverage-command: "npx nyc report --reporter=text"

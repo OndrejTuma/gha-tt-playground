@@ -1,2 +1,7 @@
 .idea
 node_modules
+.cache
+.nyc_output
+cypress/videos
+dist
+my-coverage
