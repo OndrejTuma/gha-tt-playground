@@ -1,11 +1,15 @@
 name: Integration Tests
-description: Run integration tests
+description: Run integration tests and upload screenshots on failure
 
 inputs:
   screenshots:
     description: 'Artifact name for screenshot'
     required: false
     default: cypress-screenshots
+  command:
+    description: Command to be run as integration test
+    required: false
+    default: yarn test:integration:ci
 
 runs:
   using: composite
@@ -20,9 +24,7 @@ runs:
       uses: cypress-io/github-action@v2
       with:
         install: false
-        start: yarn start
-        wait-on: http://localhost:1234
-        command: yarn test:ci
+        command: ${{ inputs.command }}
 
     - name: Store Cypress Screenshots Artifact
       uses: actions/upload-artifact@v2

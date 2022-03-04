@@ -10,11 +10,6 @@ inputs:
 runs:
   using: composite
   steps:
-#    - name: Get Coverage Output Folder
-#      id: coverage-folder
-#      shell: bash
-#      run: echo "::set-output name=dir::$(node ./.github/actions/cypress-coverage-artifact/findCoverageOutputDir.js ${{ inputs.path }})"
-
     - name: Code Coverage Reporter
       uses: tj-actions/coverage-reporter@3eef0fe5e5d3881cc8faa2fb1365296edbf8af60
       with:
