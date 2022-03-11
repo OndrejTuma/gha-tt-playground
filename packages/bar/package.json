@@ -22,6 +22,7 @@
   "devDependencies": {
     "@babel/core": "^7.17.4",
     "@cypress/code-coverage": "^3.9.12",
+    "@cypress/webpack-preprocessor": "^5.11.1",
     "@toptal/davinci": "^11.2.6",
     "@zeit/ncc": "^0.22.3",
     "babel-plugin-istanbul": "^6.1.1",

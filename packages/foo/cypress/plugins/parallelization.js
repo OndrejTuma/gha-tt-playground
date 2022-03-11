@@ -11,16 +11,19 @@ const sizeOf = file => {
 }
 
 module.exports = config => {
-  const groupId = parseInt(process.env.GROUP_INDEX || 0, 10)
+  const groupIndex = parseInt(process.env.GROUP_INDEX || 0, 10)
   const total = parseInt(process.env.PARALLEL_GROUPS || 1, 10)
 
-  if (groupId < 0 || total <= 1) {
+  if (groupIndex < 0 || total <= 1) {
     return
   }
 
-  const specs = glob.sync(path.join(config.integrationFolder, config.testFiles))
+  const { integrationFolder, testFiles } = config
+
+  const specPattern = Array.isArray(testFiles) ? `{${testFiles.join(',')}}` : testFiles
+  const specs = glob.sync(path.join(integrationFolder, specPattern))
 
   config.testFiles = specs
     .sort((lhs, rhs) => sizeOf(rhs) - sizeOf(lhs))
-    .filter((_, index) => index % total === groupId)
+    .filter((_, index) => index % total === groupIndex)
 }

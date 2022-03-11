@@ -1,11 +1,10 @@
-const pickSpecs = require('./pick-specs')
+const parallelization = require('./parallelization')
 
 module.exports = (on, config) => {
   require('@cypress/code-coverage/task')(on, config)
-  // include any other plugin code...
 
   // split spec files
-  pickSpecs(config)
+  parallelization(config)
 
   // It's IMPORTANT to return the config object
   // with any changed environment variables

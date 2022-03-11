@@ -3,40 +3,41 @@ name: Integration tests Workflow
 env:
   # In monorepo if you want to run integration tests only for
   # specific subset of packages, define them in PARALLEL_MATRIX below
-  # You can specify how many instances you want to run for package in parallel_groups field
 #  PARALLEL_MATRIX: |
-#    [
+#    ${{ toJSON('[
 #      {
-#        "pkg": "@toptal/prdik",
-#        "location": "packages/prdik",
-#        "parallel_groups": 2
+#        "pkg": "@toptal/my-package", # name of the package
+#        "location": "packages/my-package", # location to package from root folder
+#        "parallel_groups": 3 # how many parallel instances to run for this package
 #      }
-#    ]
+#    ]') }}
   PARALLEL_GROUPS: 2
   PRINT_COVERAGE: true
-  COVERAGE_REPORT_DIR: ./coverage
+  COVERAGE_REPORT_DIR: coverage
   COVERAGE_REPORTER: text-summary
   COMMAND: test:integration:ci
-  NODE_ENV: test
-  NPM_TOKEN: ${{ secrets.NPM_TOKEN_READ_ONLY }}
   GITHUB_TOKEN: ${{ secrets.TOPTAL_DEVBOT_TOKEN }}
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN_READ_ONLY }}
 
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
-    branches: [master, main]
+    branches: [master]
 
 jobs:
   create_matrix:
     name: Create:Matrix
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout project
+        uses: actions/checkout@v2
+
       - name: Checkout davinci GHAs
         uses: actions/checkout@v2
-#        with:
-#          repository: toptal/davinci-github-actions
-#          token: ${{ env.GITHUB_TOKEN }}
-#          path: ./.github/actions/
+        with:
+          repository: toptal/davinci-github-actions
+          token: ${{ env.GITHUB_TOKEN }}
+          path: ./.github/actions/
 
       - name: Run Matrix
         id: set-matrix
@@ -44,8 +45,6 @@ jobs:
         with:
           parallel_groups: ${{ env.PARALLEL_GROUPS }}
           parallel_matrix: ${{ env.PARALLEL_MATRIX }}
-
-      - run: echo ${{ fromJSON(steps.set-matrix.outputs.matrix) }}
 
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
@@ -55,9 +54,7 @@ jobs:
     name: Check:IntegrationTests
     runs-on: ubuntu-latest
     needs: create_matrix
-#    continue-on-error: true
     strategy:
-      fail-fast: false
       matrix: ${{ fromJson(needs.create_matrix.outputs.matrix) }}
     env:
       GROUP_INDEX: ${{ matrix.index }}
@@ -73,7 +70,7 @@ jobs:
       - name: Set integration test command
         id: set-command
         run: |
-          echo "::set-output name=command::yarn${{ needs.create_matrix.outputs.isMonorepo == 'true' && format(' {0} {1}', 'workspace', env.GROUP_PACKAGE) || ''}} ${{ env.COMMAND }}"
+          echo "::set-output name=command::yarn ${{ needs.create_matrix.outputs.isMonorepo == 'true' && format('{0} {1}', 'workspace', env.GROUP_PACKAGE) || ''}} ${{ env.COMMAND }}"
 
       - name: Set parsed package
         if: ${{ env.PRINT_COVERAGE == 'true' }}
@@ -86,12 +83,12 @@ jobs:
         run: |
           echo "::set-output name=name::out.${{ needs.create_matrix.outputs.isMonorepo == 'true' && format('{0}.{1}', steps.parsed-package.outputs.package, env.GROUP_INDEX) || env.GROUP_INDEX }}.json"
 
-#      - name: Checkout davinci GHAs
-#        uses: actions/checkout@v2
-#        with:
-#          repository: toptal/davinci-github-actions
-#          token: ${{ env.GITHUB_TOKEN }}
-#          path: ./.github/actions/
+      - name: Checkout davinci GHAs
+        uses: actions/checkout@v2
+        with:
+          repository: toptal/davinci-github-actions
+          token: ${{ env.GITHUB_TOKEN }}
+          path: ./.github/actions/
 
       - uses: ./.github/actions/yarn-install
         with:
@@ -123,10 +120,12 @@ jobs:
     steps:
       - name: Checkout davinci GHAs
         uses: actions/checkout@v2
-#        with:
-#          repository: toptal/davinci-github-actions
-#          token: ${{ env.GITHUB_TOKEN }}
-#          path: ./.github/actions/
+        with:
+          repository: toptal/davinci-github-actions
+          token: ${{ env.GITHUB_TOKEN }}
+          # remove when merged
+          ref: gha/add-create-matrix-action
+          path: ./.github/actions/
 
       - name: Download Coverage
         if: ${{ env.PRINT_COVERAGE == 'true' }}
