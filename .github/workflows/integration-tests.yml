@@ -17,7 +17,6 @@ env:
   COVERAGE_REPORT_DIR: ./coverage
   COVERAGE_REPORTER: text-summary
   COMMAND: test:integration:ci
-  NODE_ENV: test
   NPM_TOKEN: ${{ secrets.NPM_TOKEN_READ_ONLY }}
   GITHUB_TOKEN: ${{ secrets.TOPTAL_DEVBOT_TOKEN }}
 
@@ -31,6 +30,9 @@ jobs:
     name: Create:Matrix
     runs-on: ubuntu-latest
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@dffcefda964529302c673388c65a8137995e9603
+
       - name: Checkout davinci GHAs
         uses: actions/checkout@v2
 #        with:
@@ -55,7 +57,7 @@ jobs:
     name: Check:IntegrationTests
     runs-on: ubuntu-latest
     needs: create_matrix
-#    continue-on-error: true
+    continue-on-error: true
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.create_matrix.outputs.matrix) }}
@@ -128,20 +130,8 @@ jobs:
 #          token: ${{ env.GITHUB_TOKEN }}
 #          path: ./.github/actions/
 
-      - name: Download Coverage
-        if: ${{ env.PRINT_COVERAGE == 'true' }}
-        uses: actions/download-artifact@v2
-        with:
-          name: integration-coverage
-          path: integration-coverage
-
-      - name: Merge coverage files
-        run: |
-          mkdir merged-coverage
-          npx nyc merge integration-coverage merged-coverage/coverage.json
-
       - name: Print Coverage
         if: ${{ env.PRINT_COVERAGE == 'true' }}
-        uses: ./.github/actions/cypress-coverage-comment
+        uses: ./.github/actions/report-coverage
         with:
-          coverage-command: 'npx nyc report --reporter=${{ env.COVERAGE_REPORTER }} --temp-dir=merged-coverage'
+          name: integration-coverage

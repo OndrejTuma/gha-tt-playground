@@ -3,6 +3,7 @@ node_modules
 .cache
 .nyc_output
 **/cypress/videos
+**/cypress/screenshots
 my-coverage
 coverage
 dist
