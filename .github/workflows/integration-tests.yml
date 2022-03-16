@@ -1,4 +1,4 @@
-name: Integration tests Workflow
+name: Integration tests
 
 env:
   # In monorepo if you want to run integration tests only for
@@ -25,14 +25,15 @@ on:
     types: [opened, synchronize, reopened, edited]
     branches: [master, main]
 
+concurrency:
+  group: integration-tests
+  cancel-in-progress: true
+
 jobs:
   create_matrix:
     name: Create:Matrix
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@dffcefda964529302c673388c65a8137995e9603
-
       - name: Checkout davinci GHAs
         uses: actions/checkout@v2
 #        with:
@@ -77,17 +78,6 @@ jobs:
         run: |
           echo "::set-output name=command::yarn${{ needs.create_matrix.outputs.isMonorepo == 'true' && format(' {0} {1}', 'workspace', env.GROUP_PACKAGE) || ''}} ${{ env.COMMAND }}"
 
-      - name: Set parsed package
-        if: ${{ env.PRINT_COVERAGE == 'true' }}
-        id: parsed-package
-        run: echo "::set-output name=package::${GROUP_PACKAGE////-}"
-
-      - name: Set coverage filename
-        if: ${{ env.PRINT_COVERAGE == 'true' }}
-        id: coverage-filename
-        run: |
-          echo "::set-output name=name::out.${{ needs.create_matrix.outputs.isMonorepo == 'true' && format('{0}.{1}', steps.parsed-package.outputs.package, env.GROUP_INDEX) || env.GROUP_INDEX }}.json"
-
 #      - name: Checkout davinci GHAs
 #        uses: actions/checkout@v2
 #        with:
@@ -109,7 +99,7 @@ jobs:
         if: ${{ env.PRINT_COVERAGE == 'true' }}
         run: |
           mkdir integration-coverage
-          mv $GROUP_LOCATION/$COVERAGE_REPORT_DIR/coverage-final.json integration-coverage/${{ steps.coverage-filename.outputs.name }}
+          mv $GROUP_LOCATION/$COVERAGE_REPORT_DIR/coverage-final.json integration-coverage/coverage.${GROUP_PACKAGE////-}.$GROUP_INDEX.json
 
       - name: Upload Coverage
         if: ${{ env.PRINT_COVERAGE == 'true' }}

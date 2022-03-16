@@ -1,7 +1,7 @@
 module.exports = {
   // all: true,
   // 'check-coverage': true,
-  'report-dir': './my-coverage',
+  // 'report-dir': './my-coverage',
   // include: '*.js',
   // exclude: [
   //   "support-utils.js",

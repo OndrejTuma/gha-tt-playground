@@ -32,7 +32,7 @@ const run = async () => {
 
     core.setOutput('isMonorepo', !!workspaces)
 
-    let groups = workspaces ? Object.entries(workspaces) : [['default', { location: './' }]]
+    let groups = workspaces ? Object.entries(workspaces) : [['default', { location: '.' }]]
 
     // custom matrix
     if (parallelMatrixInput) {
