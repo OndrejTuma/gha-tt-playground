@@ -5,22 +5,27 @@ on:
     types: [opened, synchronize, reopened, edited]
     branches: [master, main]
 
+env:
+  GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+  WORKFLOW_NAME: integration-tests.yml
+
 jobs:
   trigger_workflow:
     name: Triggering
     runs-on: ubuntu-latest
     steps:
-      - id: prData
+      - name: Trigger Integration Tests
         uses: actions/github-script@v4
         with:
+          github-token: ${{ env.GITHUB_TOKEN }}
           script: |
-            const { owner, repo, number } = context.issue;
-            const { data: pr } = await github.pulls.get({ owner, repo, pull_number: number });
-            core.setOutput('ref', pr.head.ref)
-
-      - name: Trigger Cypress
-        uses: benc-uk/workflow-dispatch@v1.1
-        with:
-          workflow: Integration tests
-          token: ${{ secrets.BOT_TOKEN }}
-          ref: ${{ steps.prData.outputs.ref }}
+            const { owner, repo } = context.issue;
+            const workflow_id = '${{ env.WORKFLOW_NAME }}';
+            const ref = '${{ github.head_ref }}';
+            
+            github.actions.createWorkflowDispatch({
+              owner,
+              repo,
+              workflow_id,
+              ref,
+            })

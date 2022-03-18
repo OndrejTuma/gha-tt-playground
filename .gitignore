@@ -6,4 +6,5 @@ node_modules
 **/cypress/screenshots
 my-coverage
 coverage
-dist
+/dist
+packages/foo/dist
