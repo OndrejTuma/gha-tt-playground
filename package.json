@@ -12,7 +12,7 @@
     "test:integration:ci:1": "PARALLEL_GROUP_ID=1 PARALLEL_GROUPS=2 start-test start http://localhost:1234 test:ci",
     "test:ci": "cypress run",
     "test:integration:open": "cypress open",
-    "b:d": "npx ncc build .github/actions/integration-tests-matrix/index.js -o .github/actions/integration-tests-matrix/dist && yarn d",
+    "b:d": "npx ncc build .github/actions/create-matrix/index.js -o .github/actions/create-matrix/dist && yarn d",
     "d": "git cm -a --amend --no-edit && git ps --force-with-lease"
   },
   "repository": {

@@ -1,0 +1,26 @@
+name: Trigger Integration Tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+    branches: [master, main]
+
+jobs:
+  trigger_workflow:
+    name: Triggering
+    runs-on: ubuntu-latest
+    steps:
+      - id: prData
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const { owner, repo, number } = context.issue;
+            const { data: pr } = await github.pulls.get({ owner, repo, pull_number: number });
+            core.setOutput('ref', pr.head.ref)
+
+      - name: Trigger Cypress
+        uses: benc-uk/workflow-dispatch@v1.1
+        with:
+          workflow: Integration tests
+          token: ${{ secrets.BOT_TOKEN }}
+          ref: ${{ steps.prData.outputs.ref }}

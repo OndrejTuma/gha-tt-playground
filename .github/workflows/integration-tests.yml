@@ -1,32 +1,34 @@
 name: Integration tests
 
+on:
+  workflow_dispatch:
+
 env:
   # In monorepo if you want to run integration tests only for
   # specific subset of packages, define them in PARALLEL_MATRIX below
   # You can specify how many instances you want to run for package in parallel_groups field
-#  PARALLEL_MATRIX: |
-#    [
-#      {
-#        "pkg": "@toptal/prdik",
-#        "location": "packages/prdik",
-#        "parallel_groups": 2
-#      }
-#    ]
+  #  PARALLEL_MATRIX: |
+  #    [
+  #      {
+  #        "pkg": "@toptal/prdik",
+  #        "location": "packages/prdik",
+  #        "parallel_groups": 2
+  #      }
+  #    ]
   PARALLEL_GROUPS: 2
   PRINT_COVERAGE: true
   COVERAGE_REPORT_DIR: ./coverage
   COVERAGE_REPORTER: text-summary
   COMMAND: test:integration:ci
+
   NPM_TOKEN: ${{ secrets.NPM_TOKEN_READ_ONLY }}
   GITHUB_TOKEN: ${{ secrets.TOPTAL_DEVBOT_TOKEN }}
 
-on:
-  pull_request:
-    types: [opened, synchronize, reopened, edited]
-    branches: [master, main]
+  STATUS_TARGET_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+  STATUS_CHECK_NAME: ${{ github.workflow }}
 
 concurrency:
-  group: integration-tests
+  group: integration-tests-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -34,6 +36,22 @@ jobs:
     name: Create:Matrix
     runs-on: ubuntu-latest
     steps:
+      - name: Set status check - pending
+        uses: actions/github-script@v4
+        env:
+          STATUS_STATE: pending
+        with:
+          script: |
+            const { owner, repo } = context.issue;
+            await github.repos.createCommitStatus({
+              owner,
+              repo,
+              sha: context.sha,
+              context: process.env.STATUS_CHECK_NAME,
+              state: process.env.STATUS_STATE,
+              target_url: process.env.STATUS_TARGET_URL
+            })
+
       - name: Checkout davinci GHAs
         uses: actions/checkout@v2
 #        with:
@@ -61,7 +79,8 @@ jobs:
     continue-on-error: true
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.create_matrix.outputs.matrix) }}
+      matrix:
+        include: ${{ fromJson(needs.create_matrix.outputs.matrix) }}
     env:
       GROUP_INDEX: ${{ matrix.index }}
       GROUP_LOCATION: ${{ matrix.location }}
@@ -125,3 +144,19 @@ jobs:
         uses: ./.github/actions/report-coverage
         with:
           name: integration-coverage
+
+      - name: Set status check - success / error
+        uses: actions/github-script@v4
+        env:
+          STATUS_STATE: ${{ needs.integration_check.result == 'success' && 'success' || 'error' }}
+        with:
+          script: |
+            const { owner, repo } = context.issue;
+            await github.repos.createCommitStatus({
+              owner,
+              repo,
+              sha: context.sha,
+              context: process.env.STATUS_CHECK_NAME,
+              state: process.env.STATUS_STATE,
+              target_url: process.env.STATUS_TARGET_URL
+            })

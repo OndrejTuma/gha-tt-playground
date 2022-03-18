@@ -1,7 +1,7 @@
 const core = require('@actions/core')
 const execa = require('execa').execa
 
-const getWorkspaces = async () => {
+const getWorkspaces = async (npmToken) => {
   const { exitCode, stdout, stderr } = await execa(
     'yarn',
     [
@@ -10,6 +10,9 @@ const getWorkspaces = async () => {
     ],
     {
       reject: false,
+      env: {
+        NPM_TOKEN: npmToken,
+      }
     }
   )
 
@@ -25,10 +28,11 @@ const getWorkspaces = async () => {
 
 const run = async () => {
   try {
+    const npmToken = core.getInput('npm_token')
     const parallelMatrixInput = core.getInput('parallel_matrix')
     const parallelGroups = parseInt(core.getInput('parallel_groups'))
 
-    const workspaces = await getWorkspaces()
+    const workspaces = await getWorkspaces(npmToken)
 
     core.setOutput('isMonorepo', !!workspaces)
 
@@ -59,9 +63,7 @@ const run = async () => {
       return acc
     }, [])
 
-    core.setOutput('matrix', {
-      include: matrix
-    })
+    core.setOutput('matrix', matrix)
 
   } catch (error) {
     core.setFailed(error.message)
