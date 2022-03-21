@@ -28,7 +28,7 @@
   "devDependencies": {
     "@babel/core": "^7.17.4",
     "@cypress/code-coverage": "^3.9.12",
-    "@toptal/davinci": "^11.2.6",
+    "@toptal/davinci": "11.13.3-alpha-fx-2460-put-the-integration-tests-gh-workflow-in-davinci-skeleton.4",
     "@zeit/ncc": "^0.22.3",
     "babel-plugin-istanbul": "^6.1.1",
     "chalk": "^5.0.0",
