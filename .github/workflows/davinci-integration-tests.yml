@@ -1,4 +1,4 @@
-name: Integration tests
+name: Davinci Integration Tests
 
 on:
   pull_request:
@@ -27,7 +27,7 @@ env:
   GITHUB_TOKEN: ${{ github.token }}
 
 concurrency:
-  group: integration-tests-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -37,13 +37,6 @@ jobs:
     steps:
       - name: Checkout project
         uses: actions/checkout@v2
-
-#      - name: Checkout davinci GHAs
-#        uses: actions/checkout@v2
-#        with:
-#          repository: toptal/davinci-github-actions
-#          token: ${{ env.GITHUB_TOKEN }}
-#          path: ./.github/actions/
 
       - name: Run Matrix
         id: set-matrix
@@ -81,13 +74,6 @@ jobs:
         run: |
           echo "::set-output name=command::yarn${{ needs.create_matrix.outputs.isMonorepo == 'true' && format(' {0} {1}', 'workspace', env.GROUP_PACKAGE) || ''}} ${{ env.COMMAND }}"
 
-#      - name: Checkout davinci GHAs
-#        uses: actions/checkout@v2
-#        with:
-#          repository: toptal/davinci-github-actions
-#          token: ${{ env.GITHUB_TOKEN }}
-#          path: ./.github/actions/
-
       - uses: ./.github/actions/yarn-install
         with:
           npm_token: ${{ env.NPM_TOKEN }}
@@ -118,10 +104,6 @@ jobs:
     steps:
       - name: Checkout davinci GHAs
         uses: actions/checkout@v2
-#        with:
-#          repository: toptal/davinci-github-actions
-#          token: ${{ env.GITHUB_TOKEN }}
-#          path: ./.github/actions/
 
       - name: test
         uses: actions/github-script@v4
