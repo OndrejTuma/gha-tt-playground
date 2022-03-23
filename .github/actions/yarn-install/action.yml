@@ -1,5 +1,9 @@
 name: Yarn install
 description: Install and cache node modules with yarn
+inputs:
+  npm_token:
+    description: 'NPM access token'
+    required: false
 outputs:
   cache-hit:
     description: 'A boolean value to indicate an exact match was found for the primary key'
@@ -12,21 +16,16 @@ runs:
       shell: bash
       run: echo "::set-output name=version::$(node -v)"
 
-    - name: Set cache dir
-      id: set-cache-dir
-      shell: bash
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-
     - name: Cache node_modules folder
       uses: actions/cache@v2
       id: node-modules-cache
       with:
         path: '**/node_modules'
         key: ${{ runner.os }}-node-${{ steps.set-node-version.outputs.version }}-yarn-node_modules-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-node-${{ steps.set-node-version.outputs.version }}-yarn-node_modules-
 
     - name: yarn install
       shell: bash
+      env:
+        NPM_TOKEN: ${{ inputs.npm_token }}
       run: |
         yarn install --frozen-lockfile --ignore-optional --non-interactive
