@@ -1,19 +1,13 @@
 {
-  "name": "gha-tt-playground",
+  "name": "@gha-tt-playground/bar",
   "version": "1.0.0",
-  "private": true,
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "start": "parcel serve index.html",
     "instrument": "npx nyc instrument --compact=false ./ instrumented",
     "test:integration:ci": "start-test start http://localhost:1234 test:ci",
-    "test:integration:ci:0": "PARALLEL_GROUP_ID=0 PARALLEL_GROUPS=2 start-test start http://localhost:1234 test:ci",
-    "test:integration:ci:1": "PARALLEL_GROUP_ID=1 PARALLEL_GROUPS=2 start-test start http://localhost:1234 test:ci",
-    "test:ci": "cypress run",
-    "test:integration:open": "cypress open",
-    "b:d": "npx ncc build .github/actions/create-matrix/index.js -o .github/actions/create-matrix/dist && yarn d",
-    "d": "git cm -a --amend --no-edit && git ps --force-with-lease"
+    "test:ci": "cypress run"
   },
   "repository": {
     "type": "git",
@@ -28,7 +22,8 @@
   "devDependencies": {
     "@babel/core": "^7.17.4",
     "@cypress/code-coverage": "^3.9.12",
-    "@toptal/davinci": "11.13.3-alpha-fx-2460-put-the-integration-tests-gh-workflow-in-davinci-skeleton.4",
+    "@cypress/webpack-preprocessor": "^5.11.1",
+    "@toptal/davinci": "^11.2.6",
     "@zeit/ncc": "^0.22.3",
     "babel-plugin-istanbul": "^6.1.1",
     "chalk": "^5.0.0",
