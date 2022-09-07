@@ -3,7 +3,8 @@ name: Integration tests
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
-    branches: [master, main]
+    # branches: [master, main]
+    branches: [master]
 
 # Read more about customization: https://toptal-core.atlassian.net/l/c/91SzvPoU#Generated-IT-Workflow
 env:

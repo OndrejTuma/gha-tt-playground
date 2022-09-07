@@ -1,7 +1,6 @@
 name: Insert SVG
 
 on:
-  push:
   pull_request:
     types: [opened, synchronize, reopened, edited]
     branches: [master, main]
@@ -14,5 +13,6 @@ jobs:
       - name: Checkout project
         uses: actions/checkout@v2
 
-      - name: Generate the affected packages report
-        uses: toptal/davinci-github-actions/report-affected-packages
+      - name: Put it in
+        run: echo "![foo svg](https://raw.githubusercontent.com/$GITHUB_REPOSITORY/$GITHUB_HEAD_REF/foo.svg)" >> $GITHUB_STEP_SUMMARY
+        shell: bash
