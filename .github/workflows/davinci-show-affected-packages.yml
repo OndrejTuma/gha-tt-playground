@@ -1,0 +1,46 @@
+name: Show Affected Packages
+
+on:
+  # only for testing purpose
+  pull_request:
+    branches: [ master, main ]
+  issue_comment:
+    types: [ created ]
+
+jobs:
+  affected_packages:
+    name: Generate Affected Packages Graph
+    # if: >
+    #   github.event.issue.pull_request &&
+    #   github.event.comment.body == '@toptal-bot generate graph:affected'
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+      GRAPH_FILE: monorepo-graph.svg
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+
+      - run: sudo apt-get install graphviz
+
+      - name: Generate affected depency graph
+        run: npx @toptal/davinci-monorepo graph generate --diff main --output-file ${{ env.GRAPH_FILE }}
+
+      - name: Save base64 graph
+        id: base64
+        run: |
+          echo "::set-output name=graph::$(cat ${{ env.GRAPH_FILE }} | base64 | tr -d '\r\n')"
+
+      - uses: actions/github-script@v6
+        id: set-result
+        with:
+          script: |
+            const { issue: { number: issue_number }, repo: { owner, repo }  } = context
+
+            const body = `![Graph](./${{ env.GRAPH_FILE }})`
+
+            github.rest.issues.createComment({ issue_number, owner, repo, body })
+
+      - name: Display the graph in job summary
+        run: |
+          echo "[Affected Graph](data:image/svg+xml;base64,$(cat ${{ env.GRAPH_FILE }} | base64 | tr -d '\r\n'))" >> $GITHUB_STEP_SUMMARY
