@@ -1,0 +1,19 @@
+name: Composite with JS
+
+inputs:
+  token:
+    description: 'GitHub token'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Hello world
+      run: echo "Hello world"
+      shell: bash
+
+    - name: Run JS
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+      run: node .github/actions/composite-with-js/dist/index.js
+      shell: bash

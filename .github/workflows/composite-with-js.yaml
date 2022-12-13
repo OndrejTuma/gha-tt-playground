@@ -1,0 +1,17 @@
+name: Composite with JS
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  default:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - uses: ./.github/actions/composite-with-js
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
