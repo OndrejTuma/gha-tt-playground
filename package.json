@@ -12,8 +12,8 @@
     "test:integration:ci:1": "PARALLEL_GROUP_ID=1 PARALLEL_GROUPS=2 start-test start http://localhost:1234 test:ci",
     "test:ci": "cypress run",
     "test:integration:open": "cypress open",
-    "b:d": "npx ncc build .github/actions/create-matrix/index.js -o .github/actions/create-matrix/dist && yarn d",
-    "d": "git cm -a --amend --no-edit && git ps --force-with-lease"
+    "d": "git cm -a --amend --no-edit && git ps --force-with-lease",
+    "b:d": "ncc build .github/actions/composite-with-js/index.js -o .github/actions/composite-with-js/dist && yarn d"
   },
   "repository": {
     "type": "git",
@@ -40,8 +40,8 @@
     "parcel-bundler": "^1.12.5"
   },
   "dependencies": {
-    "@actions/core": "^1.6.0",
-    "@actions/github": "^5.0.0",
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1",
     "@toptal/picasso": "^17.3.3",
     "cypress": "^9.5.0",
     "lodash": "^4.17.21",
